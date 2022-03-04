@@ -52,13 +52,13 @@ function! syntastic#c#ReadConfig(file) abort " {{{2
 
     let parameters = []
     for line in lines
-        let matches = matchstr(line, '\m\C^\s*-I\s*\zs.\+')
+        let matches = matchstr(line, '\m\C^\s*-iquote\s*\zs.\+')
         if matches !=# ''
             " this one looks like an absolute path
             if match(matches, '\m^\%(/\|\a:\)') != -1
-                call add(parameters, '-I' . matches)
+                call add(parameters, '-iquote' . matches)
             else
-                call add(parameters, '-I' . filepath . syntastic#util#Slash() . matches)
+                call add(parameters, '-iquote' . filepath . syntastic#util#Slash() . matches)
             endif
         else
             call add(parameters, line)
@@ -262,7 +262,7 @@ function! s:_get_include_dirs(filetype) abort " {{{2
         call extend(include_dirs, g:syntastic_{a:filetype}_include_dirs)
     endif
 
-    return join(map(syntastic#util#unique(include_dirs), 'syntastic#util#shescape("-I" . v:val)'))
+    return join(map(syntastic#util#unique(include_dirs), 'syntastic#util#shescape("-iquote" . v:val)'))
 endfunction " }}}2
 
 " search the first 100 lines for include statements that are
